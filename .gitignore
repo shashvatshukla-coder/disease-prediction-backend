@@ -1,6 +1,8 @@
 ﻿node_modules/
+.npm-cache/
+npm-cache/
+*.log
+*.pid
 .env
 .env.*
 !.env.example
-back the fuking end lil bro/
-back the fuking end lil bro.zip

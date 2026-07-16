@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Disease Prediction</title>
+  <link rel="stylesheet" href="/app.css">
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <p class="eyebrow">Clinical decision support</p>
+      <h1>Disease Prediction</h1>
+    </div>
+    <div class="top-actions">
+      <span class="status-dot"></span>
+      <span>Local API</span>
+      <span class="version" id="modelVersion">v1.0</span>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="input-surface" aria-labelledby="checkerTitle">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Assessment</p>
+          <h2 id="checkerTitle">Symptom Intake</h2>
+        </div>
+        <button id="resetForm" class="ghost" type="button">Reset</button>
+      </div>
+
+      <form id="predictionForm" class="tool">
+        <label class="field field-large">
+          <span>Symptoms</span>
+          <textarea id="symptomText" rows="4" placeholder="fever, cough, body aches, fatigue"></textarea>
+        </label>
+
+        <div class="preset-row" aria-label="Example symptom sets">
+          <button class="preset" type="button" data-example="flu">Flu pattern</button>
+          <button class="preset" type="button" data-example="digestive">Digestive issue</button>
+          <button class="preset" type="button" data-example="breathing">Breathing red flag</button>
+        </div>
+
+        <div class="grid compact">
+          <label class="field">
+            <span>Age</span>
+            <input id="age" type="number" min="0" max="130" placeholder="28">
+          </label>
+          <label class="field">
+            <span>Duration</span>
+            <input id="durationDays" type="number" min="0" max="365" placeholder="2 days">
+          </label>
+        </div>
+
+        <div class="risk-row">
+          <label class="risk-toggle"><input id="pregnant" type="checkbox"><span>Pregnant</span></label>
+          <label class="risk-toggle"><input id="immunocompromised" type="checkbox"><span>Immune risk</span></label>
+        </div>
+
+        <label class="field">
+          <span>Known conditions</span>
+          <input id="chronicConditions" type="text" placeholder="asthma, diabetes">
+        </label>
+
+        <div class="quick">
+          <div class="quick-head">
+            <div>
+              <p class="eyebrow">Fast select</p>
+              <h3>Common Symptoms</h3>
+            </div>
+            <button id="clearSymptoms" class="ghost small" type="button">Clear symptoms</button>
+          </div>
+          <div id="symptomChoices" class="choices"></div>
+        </div>
+
+        <button class="primary" type="submit">
+          <span>Run Prediction</span>
+          <span class="button-arrow">-></span>
+        </button>
+      </form>
+    </section>
+
+    <section class="output-surface" aria-live="polite" aria-labelledby="resultTitle">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Triage output</p>
+          <h2 id="resultTitle">Prediction Results</h2>
+        </div>
+        <span class="result-state" id="resultState">Ready</span>
+      </div>
+
+      <div id="result" class="result empty-state">
+        <div class="empty-visual">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+        <h3>No assessment yet</h3>
+        <p>Add symptoms and run a prediction to see ranked condition patterns, urgency, and care notes.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer-note">
+    Educational triage only. This is not a diagnosis and does not replace a licensed clinician.
+  </footer>
+
+  <script src="/app.js"></script>
+</body>
+</html>
