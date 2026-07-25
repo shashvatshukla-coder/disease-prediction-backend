@@ -3,28 +3,171 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Disease Prediction</title>
+  <title>Disease Prediction Console</title>
   <link rel="stylesheet" href="/app.css">
 </head>
 <body>
+  <section id="authScreen" class="auth-screen">
+    <div class="auth-shell">
+      <div class="login-panel">
+        <div class="brand-lockup">
+          <div class="brand-mark" aria-hidden="true">
+            <span></span>
+          </div>
+          <div>
+            <p class="eyebrow">Doctor access</p>
+            <h1>Clinical Workspace Login</h1>
+            <p class="subtitle">Secure access for daily patient records, medicine completion, and symptom triage.</p>
+          </div>
+        </div>
+
+        <div class="care-quote" aria-live="polite">
+          <span aria-hidden="true">🌿</span>
+          <p id="motivationLine">Your care matters, and your life matters too.</p>
+        </div>
+
+        <form id="loginForm" class="login-form">
+          <label class="field">
+            <span>Doctor username</span>
+            <input id="loginUsername" type="text" autocomplete="username" placeholder="doctor">
+          </label>
+          <label class="field">
+            <span>Password</span>
+            <input id="loginPassword" type="password" autocomplete="current-password" placeholder="doctor123">
+          </label>
+          <button class="primary" type="submit">Sign In</button>
+          <p id="loginMessage" class="login-message" role="status"></p>
+        </form>
+
+        <div class="demo-credentials">
+          <span class="stat-label">Local demo account</span>
+          <strong>doctor / doctor123</strong>
+        </div>
+      </div>
+
+      <aside class="wellbeing-panel" aria-labelledby="wellbeingTitle">
+        <div class="wellbeing-icon" aria-hidden="true">☀️</div>
+        <p class="eyebrow">For the healer</p>
+        <h2 id="wellbeingTitle">You are valuable beyond today's workload.</h2>
+        <p class="wellbeing-copy">
+          Take one steady breath before you begin. Every patient matters, and so do you.
+        </p>
+        <div class="hindi-encouragement" lang="hi">
+          <span aria-hidden="true">🪷</span>
+          <div>
+            <strong>डॉक्टर, आपकी ज़िंदगी भी अनमोल है।</strong>
+            <p>आप रोज़ कई लोगों के लिए उम्मीद बनते हैं। कृपया अपने मन, शरीर और मुस्कान का भी ख़याल रखें।</p>
+          </div>
+        </div>
+        <div class="positive-grid" aria-label="Positive reminders">
+          <span>💚 Compassion</span>
+          <span>🌱 Rest</span>
+          <span>🤝 Support</span>
+          <span>✨ Hope</span>
+        </div>
+        <div class="positive-grid hindi-grid" lang="hi" aria-label="Hindi positive reminders">
+          <span>🌼 धैर्य</span>
+          <span>💛 अपना ख़याल</span>
+          <span>🫶 सहारा</span>
+          <span>🌈 नई उम्मीद</span>
+        </div>
+        <div class="micro-pause">
+          <span class="stat-label">60 second pause</span>
+          <strong>Breathe in, release your shoulders, drink water, then continue.</strong>
+          <p lang="hi">एक गहरी सांस लें। कंधों को ढीला छोड़ें। पानी पिएं। फिर शांति से आगे बढ़ें।</p>
+        </div>
+        <p class="wellbeing-note">
+          If the day feels too heavy, pause and reach out to a trusted colleague or local urgent support.
+          <span lang="hi">आप अकेले नहीं हैं। मदद मांगना भी हिम्मत है।</span>
+        </p>
+      </aside>
+    </div>
+  </section>
+
+  <div id="appShell" class="app-shell hidden">
   <header class="topbar">
-    <div>
-      <p class="eyebrow">Clinical decision support</p>
-      <h1>Disease Prediction</h1>
+    <div class="brand-lockup">
+      <div class="brand-mark" aria-hidden="true">
+        <span></span>
+      </div>
+      <div>
+        <p class="eyebrow">Clinical decision support</p>
+        <h1>Disease Prediction Console</h1>
+        <p class="subtitle">Daily clinical triage with patient records, medicine tracking, and follow-up planning.</p>
+      </div>
     </div>
     <div class="top-actions">
-      <span class="status-dot"></span>
-      <span>Local API</span>
+      <div class="api-pill">
+        <span class="status-dot"></span>
+        <span>API online</span>
+      </div>
+      <span class="version doctor-pill" id="doctorName">Doctor</span>
       <span class="version" id="modelVersion">v1.0</span>
+      <button id="logoutButton" class="ghost" type="button">Logout</button>
     </div>
   </header>
+
+  <section class="command-strip" aria-label="System summary">
+    <div>
+      <span class="stat-label">Assessment</span>
+      <strong id="commandAssessment">Prediction</strong>
+    </div>
+    <div>
+      <span class="stat-label">Records</span>
+      <strong id="commandRecords">Daily Notes</strong>
+    </div>
+    <div>
+      <span class="stat-label">Critical</span>
+      <strong id="commandCritical">Watchlist</strong>
+    </div>
+    <div>
+      <span class="stat-label">Shift</span>
+      <strong id="commandShift">Handover</strong>
+    </div>
+  </section>
+
+  <section class="official-brief" aria-labelledby="officialBriefTitle">
+    <div>
+      <p class="eyebrow">Government hospital demo mode</p>
+      <h2 id="officialBriefTitle">Clinical Operations Command Board</h2>
+      <p class="subtitle">A local-first dashboard for OPD flow, critical cases, daily handover, and patient continuity.</p>
+    </div>
+    <div class="official-actions">
+      <button id="printBriefing" class="ghost" type="button">Print Brief</button>
+      <button id="exportJson" class="ghost" type="button">Export JSON</button>
+      <button id="exportCsv" class="ghost" type="button">Export CSV</button>
+    </div>
+  </section>
+
+  <section class="operations-grid" aria-label="Hospital operations overview">
+    <div class="ops-card">
+      <span class="stat-label">OPD Queue</span>
+      <strong id="opdQueueCount">0</strong>
+      <p>Registered patient records today</p>
+    </div>
+    <div class="ops-card danger">
+      <span class="stat-label">Critical Watch</span>
+      <strong id="criticalWatchCount">0</strong>
+      <p>Cases needing close attention</p>
+    </div>
+    <div class="ops-card">
+      <span class="stat-label">Follow-up Due</span>
+      <strong id="dueFollowUpCount">0</strong>
+      <p>Scheduled for today or earlier</p>
+    </div>
+    <div class="ops-card">
+      <span class="stat-label">Shift Handover</span>
+      <strong id="handoverCount">0</strong>
+      <p>Notes for continuity of care</p>
+    </div>
+  </section>
 
   <main class="layout">
     <section class="input-surface" aria-labelledby="checkerTitle">
       <div class="section-head">
         <div>
-          <p class="eyebrow">Assessment</p>
-          <h2 id="checkerTitle">Symptom Intake</h2>
+          <p class="eyebrow">Patient intake</p>
+          <h2 id="checkerTitle">Assessment Details</h2>
         </div>
         <button id="resetForm" class="ghost" type="button">Reset</button>
       </div>
@@ -36,9 +179,9 @@
         </label>
 
         <div class="preset-row" aria-label="Example symptom sets">
-          <button class="preset" type="button" data-example="flu">Flu pattern</button>
-          <button class="preset" type="button" data-example="digestive">Digestive issue</button>
-          <button class="preset" type="button" data-example="breathing">Breathing red flag</button>
+          <button class="preset" type="button" data-example="flu">Respiratory</button>
+          <button class="preset" type="button" data-example="digestive">Gastrointestinal</button>
+          <button class="preset warning" type="button" data-example="breathing">Red flag</button>
         </div>
 
         <div class="grid compact">
@@ -84,16 +227,16 @@
       <div class="section-head">
         <div>
           <p class="eyebrow">Triage output</p>
-          <h2 id="resultTitle">Prediction Results</h2>
+          <h2 id="resultTitle">Clinical Summary</h2>
         </div>
         <span class="result-state" id="resultState">Ready</span>
       </div>
 
       <div id="result" class="result empty-state">
         <div class="empty-visual">
-          <span></span>
-          <span></span>
-          <span></span>
+          <span class="empty-line strong"></span>
+          <span class="empty-line"></span>
+          <span class="empty-meter"><span></span></span>
         </div>
         <h3>No assessment yet</h3>
         <p>Add symptoms and run a prediction to see ranked condition patterns, urgency, and care notes.</p>
@@ -101,9 +244,307 @@
     </section>
   </main>
 
+  <section class="doctor-workspace" aria-labelledby="workspaceTitle">
+    <div class="workspace-head">
+      <div>
+        <p class="eyebrow">Daily practice</p>
+        <h2 id="workspaceTitle">Doctor Workspace</h2>
+      </div>
+      <span class="workspace-date" id="workspaceDate">Today</span>
+    </div>
+
+    <datalist id="patientNameOptions"></datalist>
+
+    <div class="workspace-summary" aria-label="Doctor workspace summary">
+      <div class="metric"><span>Patients</span><strong id="patientCount">0</strong></div>
+      <div class="metric"><span>Medicine avg</span><strong id="medicineAverage">0%</strong></div>
+      <div class="metric"><span>Daily records</span><strong id="dailyRecordCount">0</strong></div>
+      <div class="metric"><span>Follow-ups</span><strong id="followUpCount">0</strong></div>
+    </div>
+
+    <div class="workspace-grid">
+      <section class="workspace-card" aria-labelledby="patientRecordsTitle">
+        <div class="card-head">
+          <div>
+            <p class="eyebrow">Function 1</p>
+            <h3 id="patientRecordsTitle">Patient Records</h3>
+          </div>
+          <span class="card-code">PR</span>
+        </div>
+        <form id="patientRecordForm" class="mini-form">
+          <label class="field">
+            <span>Client name</span>
+            <input id="patientName" type="text" placeholder="Aarav Sharma" autocomplete="off">
+          </label>
+          <div class="grid compact">
+            <label class="field">
+              <span>Age</span>
+              <input id="patientAge" type="number" min="0" max="130" placeholder="42">
+            </label>
+            <label class="field">
+              <span>Status</span>
+              <select id="patientStatus">
+                <option>Waiting</option>
+                <option>Consulted</option>
+                <option>Admitted</option>
+                <option>Discharged</option>
+              </select>
+            </label>
+          </div>
+          <label class="field">
+            <span>Main concern</span>
+            <input id="patientConcern" type="text" placeholder="Fever and cough">
+          </label>
+          <button class="secondary" type="submit">Save Record</button>
+        </form>
+        <div id="patientRecordList" class="record-list"></div>
+      </section>
+
+      <section class="workspace-card" aria-labelledby="medicineTitle">
+        <div class="card-head">
+          <div>
+            <p class="eyebrow">Function 2</p>
+            <h3 id="medicineTitle">Medicine Completion</h3>
+          </div>
+          <span class="card-code">MC</span>
+        </div>
+        <form id="medicineForm" class="mini-form">
+          <label class="field">
+            <span>Client name</span>
+            <input id="medicinePatient" list="patientNameOptions" type="text" placeholder="Aarav Sharma" autocomplete="off">
+          </label>
+          <label class="field">
+            <span>Medicine plan</span>
+            <input id="medicinePlan" type="text" placeholder="Paracetamol 500mg">
+          </label>
+          <div class="grid compact">
+            <label class="field">
+              <span>Completed</span>
+              <input id="dosesCompleted" type="number" min="0" max="60" placeholder="2">
+            </label>
+            <label class="field">
+              <span>Total doses</span>
+              <input id="dosesTotal" type="number" min="1" max="60" placeholder="3">
+            </label>
+          </div>
+          <button class="secondary" type="submit">Update Completion</button>
+        </form>
+        <div id="medicineList" class="record-list"></div>
+      </section>
+
+      <section class="workspace-card" aria-labelledby="dailyRecordTitle">
+        <div class="card-head">
+          <div>
+            <p class="eyebrow">Function 3</p>
+            <h3 id="dailyRecordTitle">Daily Clinical Record</h3>
+          </div>
+          <span class="card-code">DR</span>
+        </div>
+        <form id="dailyRecordForm" class="mini-form">
+          <label class="field">
+            <span>Client name</span>
+            <input id="dailyPatient" list="patientNameOptions" type="text" placeholder="Aarav Sharma" autocomplete="off">
+          </label>
+          <div class="grid triple">
+            <label class="field">
+              <span>BP</span>
+              <input id="bloodPressure" type="text" placeholder="120/80">
+            </label>
+            <label class="field">
+              <span>Pulse</span>
+              <input id="pulseRate" type="number" min="20" max="220" placeholder="78">
+            </label>
+            <label class="field">
+              <span>Temp</span>
+              <input id="temperature" type="text" placeholder="98.6 F">
+            </label>
+          </div>
+          <label class="field">
+            <span>Doctor note</span>
+            <textarea id="doctorNote" rows="3" placeholder="Symptoms improving, continue observation"></textarea>
+          </label>
+          <button class="secondary" type="submit">Add Daily Record</button>
+        </form>
+        <div id="dailyRecordList" class="record-list"></div>
+      </section>
+
+      <section class="workspace-card" aria-labelledby="followUpTitle">
+        <div class="card-head">
+          <div>
+            <p class="eyebrow">Function 4</p>
+            <h3 id="followUpTitle">Follow-up Tasks</h3>
+          </div>
+          <span class="card-code">FU</span>
+        </div>
+        <form id="followUpForm" class="mini-form">
+          <label class="field">
+            <span>Client name</span>
+            <input id="followPatient" list="patientNameOptions" type="text" placeholder="Aarav Sharma" autocomplete="off">
+          </label>
+          <div class="grid compact">
+            <label class="field">
+              <span>Next date</span>
+              <input id="followDate" type="date">
+            </label>
+            <label class="field">
+              <span>Priority</span>
+              <select id="followPriority">
+                <option>Routine</option>
+                <option>Urgent</option>
+                <option>Emergency</option>
+              </select>
+            </label>
+          </div>
+          <label class="field">
+            <span>Action needed</span>
+            <input id="followAction" type="text" placeholder="Review blood report">
+          </label>
+          <button class="secondary" type="submit">Schedule Follow-up</button>
+        </form>
+        <div id="followUpList" class="record-list"></div>
+      </section>
+    </div>
+  </section>
+
+  <section class="hospital-extensions" aria-labelledby="extensionsTitle">
+    <div class="workspace-head">
+      <div>
+        <p class="eyebrow">Official workflow</p>
+        <h2 id="extensionsTitle">Hospital Control Sections</h2>
+      </div>
+      <span class="workspace-date" id="lastSavedAt">Local records</span>
+    </div>
+
+    <div class="extension-grid">
+      <section class="workspace-card wide-card" aria-labelledby="searchTitle">
+        <div class="card-head">
+          <div>
+            <p class="eyebrow">Patient continuity</p>
+            <h3 id="searchTitle">Unified Patient Search</h3>
+          </div>
+          <span class="card-code">US</span>
+        </div>
+        <label class="field">
+          <span>Search by client name, note, medicine, concern, or action</span>
+          <input id="patientSearch" type="text" placeholder="Search patient records">
+        </label>
+        <div id="patientSearchResults" class="record-list"></div>
+      </section>
+
+      <section class="workspace-card" aria-labelledby="criticalTitle">
+        <div class="card-head">
+          <div>
+            <p class="eyebrow">Safety desk</p>
+            <h3 id="criticalTitle">Critical Watchlist</h3>
+          </div>
+          <span class="card-code">CW</span>
+        </div>
+        <form id="criticalForm" class="mini-form">
+          <label class="field">
+            <span>Client name</span>
+            <input id="criticalPatient" list="patientNameOptions" type="text" placeholder="Aarav Sharma" autocomplete="off">
+          </label>
+          <div class="grid compact">
+            <label class="field">
+              <span>Ward / bed</span>
+              <input id="criticalLocation" type="text" placeholder="OPD / Bed 4">
+            </label>
+            <label class="field">
+              <span>Priority</span>
+              <select id="criticalPriority">
+                <option>High</option>
+                <option>Observation</option>
+                <option>Emergency</option>
+              </select>
+            </label>
+          </div>
+          <label class="field">
+            <span>Risk note</span>
+            <input id="criticalIssue" type="text" placeholder="Chest pain with breathlessness">
+          </label>
+          <label class="field">
+            <span>Immediate action</span>
+            <input id="criticalAction" type="text" placeholder="ECG, oxygen, senior review">
+          </label>
+          <button class="secondary" type="submit">Add Critical Case</button>
+        </form>
+        <div id="criticalList" class="record-list"></div>
+      </section>
+
+      <section class="workspace-card" aria-labelledby="handoverTitle">
+        <div class="card-head">
+          <div>
+            <p class="eyebrow">Continuity</p>
+            <h3 id="handoverTitle">Shift Handover</h3>
+          </div>
+          <span class="card-code">SH</span>
+        </div>
+        <form id="handoverForm" class="mini-form">
+          <div class="grid compact">
+            <label class="field">
+              <span>Shift</span>
+              <select id="handoverShift">
+                <option>Morning</option>
+                <option>Evening</option>
+                <option>Night</option>
+              </select>
+            </label>
+            <label class="field">
+              <span>Unit / ward</span>
+              <input id="handoverUnit" type="text" placeholder="OPD / Medicine">
+            </label>
+          </div>
+          <label class="field">
+            <span>Handover note</span>
+            <textarea id="handoverNote" rows="3" placeholder="Patients needing review, pending tests, bed issues"></textarea>
+          </label>
+          <label class="field">
+            <span>Next team action</span>
+            <input id="handoverNext" type="text" placeholder="Review pending CBC reports at 6 PM">
+          </label>
+          <button class="secondary" type="submit">Save Handover</button>
+        </form>
+        <div id="handoverList" class="record-list"></div>
+      </section>
+
+      <section class="workspace-card wide-card" aria-labelledby="patientPrintTitle">
+        <div class="card-head">
+          <div>
+            <p class="eyebrow">Patient copy</p>
+            <h3 id="patientPrintTitle">Patient Printout</h3>
+          </div>
+          <span class="card-code">PP</span>
+        </div>
+        <div class="print-selector">
+          <label class="field">
+            <span>Client name</span>
+            <input id="printPatientName" list="patientNameOptions" type="text" placeholder="Select patient for printout" autocomplete="off">
+          </label>
+          <button id="previewPatientSlip" class="ghost" type="button">Preview Slip</button>
+          <button id="printPatientSlip" class="secondary" type="button">Print Patient Slip</button>
+        </div>
+        <div id="patientPrintPreview" class="patient-slip empty-list">Select a patient to generate a printable clinical slip.</div>
+      </section>
+
+      <section class="workspace-card wide-card" aria-labelledby="briefingTitle">
+        <div class="card-head">
+          <div>
+            <p class="eyebrow">Daily reporting</p>
+            <h3 id="briefingTitle">Auto Daily Brief</h3>
+          </div>
+          <span class="card-code">DB</span>
+        </div>
+        <div id="dailyBriefing" class="briefing-box"></div>
+      </section>
+    </div>
+  </section>
+
   <footer class="footer-note">
     Educational triage only. This is not a diagnosis and does not replace a licensed clinician.
   </footer>
+  </div>
+
+  <section id="patientPrintArea" class="patient-print-area" aria-hidden="true"></section>
 
   <script src="/app.js"></script>
 </body>

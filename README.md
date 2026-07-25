@@ -1,6 +1,6 @@
 # Disease Prediction Backend
 
-A local Express app for educational symptom-based disease prediction. It includes a browser UI, a weighted symptom-profile classifier, and API endpoints for supported symptoms and predictions.
+A local Express app for educational symptom-based disease prediction and hospital workflow support. It includes doctor login, an operations command board, daily patient records, medicine completion tracking, clinical notes, follow-up tasks, critical watchlist, shift handover, patient search, printable briefings, and JSON/CSV export.
 
 ## Run Locally
 
@@ -15,12 +15,44 @@ Open:
 http://127.0.0.1:3000/
 ```
 
+Default local doctor login:
+
+```text
+Username: doctor
+Password: doctor123
+```
+
+You can change the local account with environment variables:
+
+```env
+DOCTOR_USERNAME=doctor
+DOCTOR_PASSWORD=doctor123
+DOCTOR_NAME=Dr. Local Clinic
+CLINIC_NAME=Disease Prediction Clinic
+```
+
 ## API
 
 ```http
+POST /auth/login
+GET /auth/me
+POST /auth/logout
 GET /disease-prediction/symptoms
 POST /disease-prediction/predict
 ```
+
+The disease prediction API requires a signed-in doctor session.
+
+## Doctor Workflow Features
+
+- Operations command board for OPD, critical cases, follow-ups, and handovers
+- Patient records with status and main concern
+- Medicine completion tracking with progress percentage
+- Daily clinical notes with BP, pulse, temperature, and doctor note
+- Critical watchlist for high-risk patients
+- Shift handover notes for continuity of care
+- Unified patient search across saved local records
+- Daily briefing with print, JSON export, and CSV export
 
 Example:
 
