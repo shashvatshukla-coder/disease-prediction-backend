@@ -26,6 +26,11 @@
           <p id="motivationLine">Your care matters, and your life matters too.</p>
         </div>
 
+        <div class="auth-mode-switch" aria-label="Authentication mode">
+          <button id="showLoginMode" class="auth-mode active" type="button">Sign In</button>
+          <button id="showSignupMode" class="auth-mode" type="button">Create Account</button>
+        </div>
+
         <form id="loginForm" class="login-form">
           <label class="field">
             <span>Doctor username</span>
@@ -39,9 +44,30 @@
           <p id="loginMessage" class="login-message" role="status"></p>
         </form>
 
+        <form id="signupForm" class="login-form hidden">
+          <label class="field">
+            <span>Doctor name</span>
+            <input id="signupName" type="text" autocomplete="name" placeholder="Dr. Your Name">
+          </label>
+          <label class="field">
+            <span>Clinic name</span>
+            <input id="signupClinic" type="text" autocomplete="organization" placeholder="Disease Prediction Clinic">
+          </label>
+          <label class="field">
+            <span>Choose username</span>
+            <input id="signupUsername" type="text" autocomplete="username" placeholder="doctor">
+          </label>
+          <label class="field">
+            <span>Choose password</span>
+            <input id="signupPassword" type="password" autocomplete="new-password" placeholder="At least 8 characters">
+          </label>
+          <button class="primary" type="submit">Create Account</button>
+          <p id="signupMessage" class="login-message" role="status"></p>
+        </form>
+
         <div class="demo-credentials">
           <span class="stat-label">Local demo account</span>
-          <strong>doctor / doctor123</strong>
+          <strong>Create your MongoDB-backed doctor account, or use the local demo login.</strong>
         </div>
       </div>
 

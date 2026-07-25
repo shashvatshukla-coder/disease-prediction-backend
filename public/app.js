@@ -6,6 +6,14 @@ const loginForm = document.getElementById("loginForm");
 const loginUsername = document.getElementById("loginUsername");
 const loginPassword = document.getElementById("loginPassword");
 const loginMessage = document.getElementById("loginMessage");
+const signupForm = document.getElementById("signupForm");
+const signupName = document.getElementById("signupName");
+const signupClinic = document.getElementById("signupClinic");
+const signupUsername = document.getElementById("signupUsername");
+const signupPassword = document.getElementById("signupPassword");
+const signupMessage = document.getElementById("signupMessage");
+const showLoginMode = document.getElementById("showLoginMode");
+const showSignupMode = document.getElementById("showSignupMode");
 const motivationLine = document.getElementById("motivationLine");
 const logoutButton = document.getElementById("logoutButton");
 const doctorName = document.getElementById("doctorName");
@@ -126,6 +134,29 @@ function setLoginMessage(message, success = false) {
   if (!loginMessage) return;
   loginMessage.textContent = message;
   loginMessage.classList.toggle("success", success);
+}
+
+function setSignupMessage(message, success = false) {
+  if (!signupMessage) return;
+  signupMessage.textContent = message;
+  signupMessage.classList.toggle("success", success);
+}
+
+function setAuthMode(mode) {
+  const signupMode = mode === "signup";
+  loginForm?.classList.toggle("hidden", signupMode);
+  signupForm?.classList.toggle("hidden", !signupMode);
+  showLoginMode?.classList.toggle("active", !signupMode);
+  showSignupMode?.classList.toggle("active", signupMode);
+  setLoginMessage("");
+  setSignupMessage("");
+  window.setTimeout(() => {
+    if (signupMode) {
+      signupName?.focus();
+    } else {
+      loginUsername?.focus();
+    }
+  }, 50);
 }
 
 function showLogin() {
@@ -1109,6 +1140,35 @@ loginForm?.addEventListener("submit", async event => {
     setLoginMessage(error.message || "Could not sign in");
   }
 });
+
+signupForm?.addEventListener("submit", async event => {
+  event.preventDefault();
+  setSignupMessage("Creating account...");
+
+  try {
+    const data = await authRequest("/auth/register", {
+      method: "POST",
+      body: JSON.stringify({
+        name: signupName.value.trim(),
+        clinic: signupClinic.value.trim(),
+        username: signupUsername.value.trim(),
+        password: signupPassword.value
+      })
+    });
+
+    setSignupMessage("Account created", true);
+    signupForm.reset();
+    showApp(data.doctor);
+    await loadSymptoms();
+    await loadDoctorWorkspaceFromServer();
+    renderDoctorWorkspace();
+  } catch (error) {
+    setSignupMessage(error.message || "Could not create account");
+  }
+});
+
+showLoginMode?.addEventListener("click", () => setAuthMode("login"));
+showSignupMode?.addEventListener("click", () => setAuthMode("signup"));
 
 logoutButton?.addEventListener("click", async () => {
   try {

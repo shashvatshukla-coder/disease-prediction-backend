@@ -15,14 +15,14 @@ Open:
 http://127.0.0.1:3000/
 ```
 
-Default local doctor login:
+Default local fallback doctor login:
 
 ```text
 Username: doctor
 Password: doctor123
 ```
 
-You can change the local account with environment variables:
+You can change the local fallback account with environment variables:
 
 ```env
 DOCTOR_USERNAME=doctor
@@ -32,14 +32,16 @@ CLINIC_NAME=Disease Prediction Clinic
 MONGODB_URI=mongodb+srv://username:password@cluster0.example.mongodb.net/disease-prediction?retryWrites=true&w=majority
 ```
 
-`MONGODB_URI` is optional for local demo mode. When it is set, patient records,
-medicine completion, daily notes, follow-ups, critical cases, and handovers are
-saved to MongoDB. Without it, the browser falls back to localStorage.
+`MONGODB_URI` is optional for local demo mode. When it is set, doctors can create
+accounts and patient records, medicine completion, daily notes, follow-ups,
+critical cases, and handovers are saved to MongoDB. Without it, the browser falls
+back to localStorage and only the local fallback doctor login is available.
 
 ## API
 
 ```http
 POST /auth/login
+POST /auth/register
 GET /auth/me
 POST /auth/logout
 GET /doctor-workspace

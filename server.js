@@ -18,6 +18,10 @@ const {
   getDoctorWorkspace,
   saveDoctorWorkspace
 } = require("./services/doctorWorkspaceStore");
+const {
+  authenticateDoctorAccount,
+  createDoctorAccount
+} = require("./services/doctorAccountStore");
 
 const app = express();
 const PORT = Number(process.env.PORT || 3000);
@@ -51,14 +55,26 @@ function secureEquals(left, right) {
   return crypto.timingSafeEqual(leftHash, rightHash);
 }
 
-function publicDoctorProfile() {
+function publicDoctorProfile(doctor = localDoctor) {
   return {
-    id: localDoctor.id,
-    username: localDoctor.username,
-    name: localDoctor.name,
-    clinic: localDoctor.clinic,
-    role: localDoctor.role
+    id: doctor.id,
+    username: doctor.username,
+    name: doctor.name,
+    clinic: doctor.clinic,
+    role: doctor.role || "Doctor"
   };
+}
+
+function createSession(res, doctor) {
+  const token = crypto.randomBytes(32).toString("hex");
+  sessions.set(token, {
+    doctorId: doctor.id,
+    doctor,
+    createdAt: Date.now(),
+    expiresAt: Date.now() + SESSION_DURATION_MS
+  });
+  setSessionCookie(res, token);
+  return token;
 }
 
 function setSessionCookie(res, token) {
@@ -87,7 +103,7 @@ function getSession(req) {
   }
 
   session.expiresAt = Date.now() + SESSION_DURATION_MS;
-  return { token, doctor: publicDoctorProfile() };
+  return { token, doctor: session.doctor || publicDoctorProfile() };
 }
 
 function requireDoctor(req, res, next) {
@@ -135,8 +151,28 @@ app.get("/health", (req, res) => {
   });
 });
 
-app.post("/auth/login", loginLimiter, (req, res) => {
+app.post("/auth/register", loginLimiter, async (req, res) => {
+  try {
+    const doctor = await createDoctorAccount(req.body || {});
+    createSession(res, doctor);
+    res.status(201).json({ success: true, doctor });
+  } catch (error) {
+    res.status(error.statusCode || 500).json({
+      success: false,
+      message: error.message || "Could not create account"
+    });
+  }
+});
+
+app.post("/auth/login", loginLimiter, async (req, res) => {
   const { username, password } = req.body || {};
+  const accountDoctor = await authenticateDoctorAccount(username, password);
+  if (accountDoctor) {
+    createSession(res, accountDoctor);
+    res.json({ success: true, doctor: accountDoctor });
+    return;
+  }
+
   const usernameMatches = secureEquals(username || "", localDoctor.username);
   const passwordMatches = secureEquals(password || "", localDoctor.password);
 
@@ -145,15 +181,9 @@ app.post("/auth/login", loginLimiter, (req, res) => {
     return;
   }
 
-  const token = crypto.randomBytes(32).toString("hex");
-  sessions.set(token, {
-    doctorId: localDoctor.id,
-    createdAt: Date.now(),
-    expiresAt: Date.now() + SESSION_DURATION_MS
-  });
-  setSessionCookie(res, token);
-
-  res.json({ success: true, doctor: publicDoctorProfile() });
+  const doctor = publicDoctorProfile();
+  createSession(res, doctor);
+  res.json({ success: true, doctor });
 });
 
 app.get("/auth/me", (req, res) => {
@@ -232,7 +262,7 @@ app.use((req, res) => {
   res.status(404).json({
     success: false,
     message: "Route not found",
-    availableEndpoints: ["/", "/health", "/auth/login", "/auth/me", "/auth/logout", "/doctor-workspace", "/disease-prediction/symptoms", "/disease-prediction/predict"]
+    availableEndpoints: ["/", "/health", "/auth/register", "/auth/login", "/auth/me", "/auth/logout", "/doctor-workspace", "/disease-prediction/symptoms", "/disease-prediction/predict"]
   });
 });
 

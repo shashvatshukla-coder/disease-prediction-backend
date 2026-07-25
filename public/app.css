@@ -188,6 +188,31 @@ p {
   gap: 14px;
 }
 
+.auth-mode-switch {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius);
+  background: var(--surface-soft);
+  padding: 5px;
+}
+
+.auth-mode {
+  min-height: 38px;
+  border: 0;
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--muted);
+  font-weight: 900;
+}
+
+.auth-mode.active {
+  background: #ffffff;
+  color: var(--teal-dark);
+  box-shadow: var(--shadow-sm);
+}
+
 .login-message {
   min-height: 22px;
   color: var(--red);

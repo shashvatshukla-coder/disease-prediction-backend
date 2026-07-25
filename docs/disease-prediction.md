@@ -47,6 +47,27 @@ The stored workspace contains:
 If `MONGODB_URI` is not configured, the API reports `storage: "local"` and the
 browser keeps using localStorage.
 
+## Doctor accounts
+
+When `MONGODB_URI` is configured, doctors can create accounts from the login
+screen. Passwords are stored as PBKDF2 hashes, not as plain text.
+
+```http
+POST /auth/register
+Content-Type: application/json
+
+{
+  "name": "Dr. Local Clinic",
+  "clinic": "Disease Prediction Clinic",
+  "username": "doctor",
+  "password": "strong-password"
+}
+```
+
+Successful registration signs in the doctor immediately. `POST /auth/login`
+checks MongoDB doctor accounts first, then falls back to the environment-based
+local doctor account.
+
 ## Predict from symptoms
 
 ```http
