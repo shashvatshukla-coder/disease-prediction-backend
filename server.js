@@ -34,6 +34,8 @@ const localDoctor = {
   role: "Doctor"
 };
 
+app.set("trust proxy", 1);
+
 function parseCookies(cookieHeader = "") {
   return cookieHeader.split(";").reduce((cookies, pair) => {
     const [rawKey, ...rawValue] = pair.trim().split("=");
