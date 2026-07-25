@@ -266,13 +266,10 @@ app.use((req, res) => {
   });
 });
 
-connectDatabase()
-  .then(() => {
-    app.listen(PORT, () => {
-      console.log(`Disease prediction backend running on port ${PORT}`);
-    });
-  })
-  .catch(error => {
-    console.error(`MongoDB connection failed: ${error.message}`);
-    process.exit(1);
-  });
+connectDatabase().catch(error => {
+  console.error(`MongoDB connection failed: ${error.message}`);
+});
+
+app.listen(PORT, () => {
+  console.log(`Disease prediction backend running on port ${PORT}`);
+});
