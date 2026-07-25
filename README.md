@@ -29,7 +29,12 @@ DOCTOR_USERNAME=doctor
 DOCTOR_PASSWORD=doctor123
 DOCTOR_NAME=Dr. Local Clinic
 CLINIC_NAME=Disease Prediction Clinic
+MONGODB_URI=mongodb+srv://username:password@cluster0.example.mongodb.net/disease-prediction?retryWrites=true&w=majority
 ```
+
+`MONGODB_URI` is optional for local demo mode. When it is set, patient records,
+medicine completion, daily notes, follow-ups, critical cases, and handovers are
+saved to MongoDB. Without it, the browser falls back to localStorage.
 
 ## API
 
@@ -37,11 +42,29 @@ CLINIC_NAME=Disease Prediction Clinic
 POST /auth/login
 GET /auth/me
 POST /auth/logout
+GET /doctor-workspace
+PUT /doctor-workspace
 GET /disease-prediction/symptoms
 POST /disease-prediction/predict
 ```
 
-The disease prediction API requires a signed-in doctor session.
+The doctor workspace and disease prediction APIs require a signed-in doctor session.
+
+## MongoDB Atlas + Render
+
+1. Create a MongoDB Atlas cluster.
+2. Create a database user and password.
+3. Allow network access from Render. For a simple demo, Atlas can allow
+   `0.0.0.0/0`; for production, restrict this more carefully.
+4. Copy the Node.js connection string and replace the username, password, and
+   database name.
+5. In Render, add this environment variable:
+
+```env
+MONGODB_URI=mongodb+srv://username:password@cluster0.example.mongodb.net/disease-prediction?retryWrites=true&w=majority
+```
+
+Redeploy the Render service after saving the environment variable.
 
 ## Doctor Workflow Features
 

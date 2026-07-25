@@ -12,6 +12,12 @@ const {
   listKnownSymptoms,
   predictDisease
 } = require("./services/diseasePredictionModel");
+const {
+  connectDatabase,
+  databaseConfigured,
+  getDoctorWorkspace,
+  saveDoctorWorkspace
+} = require("./services/doctorWorkspaceStore");
 
 const app = express();
 const PORT = Number(process.env.PORT || 3000);
@@ -120,7 +126,11 @@ app.get("/", (req, res) => {
 });
 
 app.get("/health", (req, res) => {
-  res.json({ success: true, status: "ok" });
+  res.json({
+    success: true,
+    status: "ok",
+    database: databaseConfigured() ? "configured" : "not_configured"
+  });
 });
 
 app.post("/auth/login", loginLimiter, (req, res) => {
@@ -164,6 +174,40 @@ app.post("/auth/logout", (req, res) => {
   res.json({ success: true });
 });
 
+app.get("/doctor-workspace", requireDoctor, async (req, res) => {
+  if (!databaseConfigured()) {
+    res.json({ success: true, storage: "local", data: null });
+    return;
+  }
+
+  try {
+    const data = await getDoctorWorkspace(req.doctor.id);
+    res.json({ success: true, storage: "mongodb", data });
+  } catch (error) {
+    res.status(503).json({
+      success: false,
+      message: "Could not load doctor workspace from MongoDB"
+    });
+  }
+});
+
+app.put("/doctor-workspace", requireDoctor, async (req, res) => {
+  if (!databaseConfigured()) {
+    res.json({ success: true, storage: "local", data: null });
+    return;
+  }
+
+  try {
+    const data = await saveDoctorWorkspace(req.doctor.id, req.body || {});
+    res.json({ success: true, storage: "mongodb", data });
+  } catch (error) {
+    res.status(503).json({
+      success: false,
+      message: "Could not save doctor workspace to MongoDB"
+    });
+  }
+});
+
 app.get("/disease-prediction/symptoms", requireDoctor, (req, res) => {
   res.json({
     success: true,
@@ -186,10 +230,17 @@ app.use((req, res) => {
   res.status(404).json({
     success: false,
     message: "Route not found",
-    availableEndpoints: ["/", "/health", "/auth/login", "/auth/me", "/auth/logout", "/disease-prediction/symptoms", "/disease-prediction/predict"]
+    availableEndpoints: ["/", "/health", "/auth/login", "/auth/me", "/auth/logout", "/doctor-workspace", "/disease-prediction/symptoms", "/disease-prediction/predict"]
   });
 });
 
-app.listen(PORT, () => {
-  console.log(`Disease prediction backend running on port ${PORT}`);
-});
+connectDatabase()
+  .then(() => {
+    app.listen(PORT, () => {
+      console.log(`Disease prediction backend running on port ${PORT}`);
+    });
+  })
+  .catch(error => {
+    console.error(`MongoDB connection failed: ${error.message}`);
+    process.exit(1);
+  });

@@ -24,6 +24,29 @@ GET /disease-prediction/symptoms
 
 Returns supported symptom IDs, display labels, and accepted examples.
 
+## Doctor workspace persistence
+
+When `MONGODB_URI` is configured, these authenticated endpoints persist the
+doctor dashboard data in MongoDB:
+
+```http
+GET /doctor-workspace
+PUT /doctor-workspace
+Content-Type: application/json
+```
+
+The stored workspace contains:
+
+- `patients`
+- `medicines`
+- `dailyRecords`
+- `followUps`
+- `criticalCases`
+- `handovers`
+
+If `MONGODB_URI` is not configured, the API reports `storage: "local"` and the
+browser keeps using localStorage.
+
 ## Predict from symptoms
 
 ```http

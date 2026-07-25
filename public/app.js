@@ -58,6 +58,8 @@ const patientPrintPreview = document.getElementById("patientPrintPreview");
 const patientPrintArea = document.getElementById("patientPrintArea");
 const hospitalExtensions = document.querySelector(".hospital-extensions");
 const doctorWorkspaceStorageKey = "disease-prediction-doctor-workspace-v1";
+let workspaceStorageMode = "local";
+let workspaceSaveTimer = null;
 
 const preferredSymptoms = [
   "fever",
@@ -164,6 +166,7 @@ async function initializeDoctorSession() {
     const data = await authRequest("/auth/me", { method: "GET", headers: {} });
     showApp(data.doctor);
     await loadSymptoms();
+    await loadDoctorWorkspaceFromServer();
     renderDoctorWorkspace();
   } catch (error) {
     showLogin();
@@ -243,8 +246,8 @@ function timeLabel(value) {
   });
 }
 
-function loadDoctorData() {
-  const fallback = {
+function emptyDoctorData() {
+  return {
     patients: [],
     medicines: [],
     dailyRecords: [],
@@ -252,23 +255,65 @@ function loadDoctorData() {
     criticalCases: [],
     handovers: []
   };
+}
+
+function normaliseDoctorData(data = {}) {
+  const fallback = emptyDoctorData();
+  return {
+    patients: Array.isArray(data.patients) ? data.patients : fallback.patients,
+    medicines: Array.isArray(data.medicines) ? data.medicines : fallback.medicines,
+    dailyRecords: Array.isArray(data.dailyRecords) ? data.dailyRecords : fallback.dailyRecords,
+    followUps: Array.isArray(data.followUps) ? data.followUps : fallback.followUps,
+    criticalCases: Array.isArray(data.criticalCases) ? data.criticalCases : fallback.criticalCases,
+    handovers: Array.isArray(data.handovers) ? data.handovers : fallback.handovers
+  };
+}
+
+function loadDoctorData() {
   try {
     const saved = JSON.parse(localStorage.getItem(doctorWorkspaceStorageKey) || "{}");
-    return {
-      patients: Array.isArray(saved.patients) ? saved.patients : [],
-      medicines: Array.isArray(saved.medicines) ? saved.medicines : [],
-      dailyRecords: Array.isArray(saved.dailyRecords) ? saved.dailyRecords : [],
-      followUps: Array.isArray(saved.followUps) ? saved.followUps : [],
-      criticalCases: Array.isArray(saved.criticalCases) ? saved.criticalCases : [],
-      handovers: Array.isArray(saved.handovers) ? saved.handovers : []
-    };
+    return normaliseDoctorData(saved);
   } catch (error) {
-    return fallback;
+    return emptyDoctorData();
   }
 }
 
 function saveDoctorData() {
   localStorage.setItem(doctorWorkspaceStorageKey, JSON.stringify(doctorData));
+  queueWorkspaceSave();
+}
+
+async function loadDoctorWorkspaceFromServer() {
+  try {
+    const response = await authRequest("/doctor-workspace", { method: "GET", headers: {} });
+    workspaceStorageMode = response.storage || "local";
+
+    if (response.storage === "mongodb" && response.data) {
+      doctorData = normaliseDoctorData(response.data);
+      localStorage.setItem(doctorWorkspaceStorageKey, JSON.stringify(doctorData));
+    }
+  } catch (error) {
+    workspaceStorageMode = "local";
+  }
+}
+
+function queueWorkspaceSave() {
+  if (workspaceStorageMode !== "mongodb") return;
+  window.clearTimeout(workspaceSaveTimer);
+  workspaceSaveTimer = window.setTimeout(saveDoctorWorkspaceToServer, 350);
+}
+
+async function saveDoctorWorkspaceToServer() {
+  try {
+    await authRequest("/doctor-workspace", {
+      method: "PUT",
+      body: JSON.stringify(doctorData)
+    });
+  } catch (error) {
+    if (lastSavedAt) {
+      lastSavedAt.textContent = "Saved locally; MongoDB sync failed";
+    }
+  }
 }
 
 function collectionEntries() {
@@ -303,7 +348,8 @@ function dueFollowUps() {
 function updateLastSaved() {
   if (!lastSavedAt) return;
   const newest = recordsByNewest(unifiedRecords())[0];
-  lastSavedAt.textContent = newest ? `Last saved ${timeLabel(newest.createdAt)}` : "Local records";
+  const storageLabel = workspaceStorageMode === "mongodb" ? "MongoDB" : "local";
+  lastSavedAt.textContent = newest ? `Last saved to ${storageLabel} ${timeLabel(newest.createdAt)}` : `${titleCase(storageLabel)} records`;
 }
 
 function makeRecordId() {
@@ -1057,6 +1103,7 @@ loginForm?.addEventListener("submit", async event => {
     setLoginMessage("Signed in", true);
     showApp(data.doctor);
     await loadSymptoms();
+    await loadDoctorWorkspaceFromServer();
     renderDoctorWorkspace();
   } catch (error) {
     setLoginMessage(error.message || "Could not sign in");
