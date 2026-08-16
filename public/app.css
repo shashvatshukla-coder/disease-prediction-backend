@@ -1060,6 +1060,16 @@ select {
   gap: 12px;
 }
 
+.card-head-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.card-head-actions .small {
+  padding: 7px 10px;
+}
+
 .card-code {
   min-width: 36px;
   min-height: 32px;
@@ -1633,6 +1643,38 @@ select {
   .operations-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  body.print-section-mode * {
+    visibility: hidden !important;
+  }
+
+  body.print-section-mode .active-print-section,
+  body.print-section-mode .active-print-section * {
+    visibility: visible !important;
+  }
+
+  body.print-section-mode .active-print-section {
+    position: absolute;
+    inset: 0;
+    display: block !important;
+    width: 100%;
+    min-height: auto;
+    padding: 0;
+    border: 0;
+    box-shadow: none;
+    background: #ffffff;
+  }
+
+  body.print-section-mode .active-print-section .mini-form,
+  body.print-section-mode .active-print-section [data-print-section],
+  body.print-section-mode .active-print-section [data-delete],
+  body.print-section-mode .active-print-section [data-print-patient] {
+    display: none !important;
+  }
+
+  body.print-section-mode .active-print-section .record-item {
+    break-inside: avoid;
   }
 
   body.print-patient-mode > :not(.patient-print-area) {
