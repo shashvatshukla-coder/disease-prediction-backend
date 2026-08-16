@@ -63,7 +63,7 @@ const printPatientName = document.getElementById("printPatientName");
 const previewPatientSlip = document.getElementById("previewPatientSlip");
 const printPatientSlip = document.getElementById("printPatientSlip");
 const patientPrintPreview = document.getElementById("patientPrintPreview");
-const patientPrintArea = document.getElementById("patientPrintArea");
+const patientPrintArea = document.getElementById("patientPrintArea");\nconst sectionPrintArea = document.getElementById("sectionPrintArea");
 const hospitalExtensions = document.querySelector(".hospital-extensions");
 const doctorWorkspaceStorageKey = "disease-prediction-doctor-workspace-v1";
 let workspaceStorageMode = "local";
@@ -713,20 +713,29 @@ function clearPatientPrintMode() {
 
 function clearWorkspacePrintMode() {
   document.body.classList.remove("print-section-mode");
-  document.querySelector(".active-print-section")?.classList.remove("active-print-section");
+  if (sectionPrintArea) {
+    sectionPrintArea.replaceChildren();
+    sectionPrintArea.setAttribute("aria-hidden", "true");
+  }
 }
 
 function printWorkspaceSection(titleId) {
   const title = document.getElementById(titleId);
   const section = title?.closest(".workspace-card");
-  if (!section) {
+  if (!section || !sectionPrintArea) {
     window.alert("This section could not be prepared for printing.");
     return;
   }
 
   clearPatientPrintMode();
   clearWorkspacePrintMode();
-  section.classList.add("active-print-section");
+
+  const printableSection = section.cloneNode(true);
+  printableSection.classList.add("active-print-section");
+  printableSection.querySelectorAll("form, button").forEach(element => element.remove());
+  sectionPrintArea.replaceChildren(printableSection);
+  sectionPrintArea.removeAttribute("aria-hidden");
+
   document.body.classList.add("print-section-mode");
   window.requestAnimationFrame(() => {
     window.print();
