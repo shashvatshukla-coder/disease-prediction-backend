@@ -711,6 +711,29 @@ function clearPatientPrintMode() {
   patientPrintArea?.setAttribute("aria-hidden", "true");
 }
 
+function clearWorkspacePrintMode() {
+  document.body.classList.remove("print-section-mode");
+  document.querySelector(".active-print-section")?.classList.remove("active-print-section");
+}
+
+function printWorkspaceSection(titleId) {
+  const title = document.getElementById(titleId);
+  const section = title?.closest(".workspace-card");
+  if (!section) {
+    window.alert("This section could not be prepared for printing.");
+    return;
+  }
+
+  clearPatientPrintMode();
+  clearWorkspacePrintMode();
+  section.classList.add("active-print-section");
+  document.body.classList.add("print-section-mode");
+  window.requestAnimationFrame(() => {
+    window.print();
+    window.setTimeout(clearWorkspacePrintMode, 3000);
+  });
+}
+
 function printPatientSlipFor(value) {
   const slip = buildPatientSlipHtml(value);
   if (!slip.ok) {
@@ -1315,8 +1338,15 @@ printBriefing?.addEventListener("click", () => {
 exportJson?.addEventListener("click", exportRecordsAsJson);
 exportCsv?.addEventListener("click", exportRecordsAsCsv);
 window.addEventListener("afterprint", clearPatientPrintMode);
+window.addEventListener("afterprint", clearWorkspacePrintMode);
 
 function handleDeleteClick(event) {
+  const sectionPrintButton = event.target.closest("[data-print-section]");
+  if (sectionPrintButton) {
+    printWorkspaceSection(sectionPrintButton.dataset.printSection || "");
+    return;
+  }
+
   const printButton = event.target.closest("[data-print-patient]");
   if (printButton) {
     const patientName = printButton.dataset.printPatient || "";
