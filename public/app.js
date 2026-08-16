@@ -734,6 +734,30 @@ function printWorkspaceSection(titleId) {
   const printableSection = section.cloneNode(true);
   printableSection.classList.add("active-print-section");
   printableSection.querySelectorAll("form, button").forEach(element => element.remove());
+
+  const reportMeta = document.createElement("div");
+  reportMeta.className = "print-report-meta";
+  reportMeta.innerHTML = `
+    <strong>Compact Function Report</strong>
+    <span>Printed ${escapeHtml(new Date().toLocaleString())}</span>
+  `;
+  printableSection.prepend(reportMeta);
+
+  const records = [...printableSection.querySelectorAll(".record-item")];
+  const printLimit = 8;
+  records.slice(printLimit).forEach(record => record.remove());
+  if (records.length > printLimit) {
+    const omittedNote = document.createElement("p");
+    omittedNote.className = "print-omitted-note";
+    omittedNote.textContent = `Showing the latest ${printLimit} of ${records.length} records. Export JSON or CSV for the complete history.`;
+    printableSection.append(omittedNote);
+  }
+
+  const reportFooter = document.createElement("p");
+  reportFooter.className = "print-report-footer";
+  reportFooter.textContent = "Disease Prediction Clinic · Internal clinical workflow report";
+  printableSection.append(reportFooter);
+
   sectionPrintArea.replaceChildren(printableSection);
   sectionPrintArea.removeAttribute("aria-hidden");
 
