@@ -1271,7 +1271,8 @@ select {
   white-space: nowrap;
 }
 
-.patient-print-area {
+.patient-print-area,
+.section-print-area {
   display: none;
 }
 
@@ -1645,32 +1646,23 @@ select {
     grid-template-columns: repeat(2, 1fr);
   }
 
-  body.print-section-mode * {
-    visibility: hidden !important;
+  body.print-section-mode > :not(.section-print-area) {
+    display: none !important;
   }
 
-  body.print-section-mode .active-print-section,
-  body.print-section-mode .active-print-section * {
-    visibility: visible !important;
+  body.print-section-mode .section-print-area {
+    display: block !important;
+    width: 100%;
+    padding: 0;
   }
 
   body.print-section-mode .active-print-section {
-    position: absolute;
-    inset: 0;
     display: block !important;
     width: 100%;
-    min-height: auto;
     padding: 0;
     border: 0;
     box-shadow: none;
     background: #ffffff;
-  }
-
-  body.print-section-mode .active-print-section .mini-form,
-  body.print-section-mode .active-print-section [data-print-section],
-  body.print-section-mode .active-print-section [data-delete],
-  body.print-section-mode .active-print-section [data-print-patient] {
-    display: none !important;
   }
 
   body.print-section-mode .active-print-section .record-item {
