@@ -33,9 +33,10 @@ MONGODB_URI=mongodb+srv://username:password@cluster0.example.mongodb.net/disease
 ```
 
 `MONGODB_URI` is optional for local demo mode. When it is set, doctors can create
-accounts and patient records, medicine completion, daily notes, follow-ups,
-critical cases, and handovers are saved to MongoDB. Without it, the browser falls
-back to localStorage and only the local fallback doctor login is available.
+persistent accounts and workspace records in MongoDB. Without it, doctors can
+still create and use demo accounts, but those accounts remain in server memory
+and are cleared whenever the server restarts. The browser workspace continues to
+use localStorage in demo mode. Configure MongoDB for persistent production accounts.
 
 ## API
 
