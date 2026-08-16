@@ -1608,7 +1608,8 @@ select {
 
 @media print {
   @page {
-    margin: 14mm;
+    size: A4 portrait;
+    margin: 8mm;
   }
 
   body {
@@ -1665,8 +1666,98 @@ select {
     background: #ffffff;
   }
 
+  body.print-section-mode .active-print-section {
+    font-size: 9pt;
+    line-height: 1.25;
+  }
+
+  body.print-section-mode .active-print-section .print-report-meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding-bottom: 6px;
+    margin-bottom: 8px;
+    border-bottom: 1px solid #6f7782;
+    color: #26313c;
+    font-size: 8pt;
+  }
+
+  body.print-section-mode .active-print-section .card-head {
+    align-items: center;
+    margin-bottom: 6px;
+  }
+
+  body.print-section-mode .active-print-section .card-head h3 {
+    margin: 1px 0 0;
+    font-size: 15pt;
+  }
+
+  body.print-section-mode .active-print-section .card-head .eyebrow {
+    margin: 0;
+    font-size: 7.5pt;
+  }
+
+  body.print-section-mode .active-print-section .card-head-actions {
+    display: block;
+  }
+
+  body.print-section-mode .active-print-section .card-code {
+    min-width: 30px;
+    min-height: 25px;
+    font-size: 8pt;
+  }
+
+  body.print-section-mode .active-print-section .record-list {
+    min-height: 0;
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px !important;
+  }
+
   body.print-section-mode .active-print-section .record-item {
     break-inside: avoid;
+    gap: 4px;
+    padding: 7px;
+    border-radius: 5px;
+    box-shadow: none;
+    font-size: 8pt;
+  }
+
+  body.print-section-mode .active-print-section .record-title {
+    gap: 1px;
+  }
+
+  body.print-section-mode .active-print-section .record-title strong {
+    font-size: 9pt;
+  }
+
+  body.print-section-mode .active-print-section .record-meta,
+  body.print-section-mode .active-print-section .record-note {
+    font-size: 7.5pt;
+    line-height: 1.25;
+  }
+
+  body.print-section-mode .active-print-section .status-badge {
+    min-height: 19px;
+    padding: 2px 5px;
+    font-size: 7pt;
+  }
+
+  body.print-section-mode .active-print-section .progress-line {
+    height: 5px;
+  }
+
+  body.print-section-mode .active-print-section .print-omitted-note,
+  body.print-section-mode .active-print-section .print-report-footer {
+    margin: 7px 0 0;
+    color: #515b66;
+    font-size: 7.5pt;
+  }
+
+  body.print-section-mode .active-print-section .print-report-footer {
+    padding-top: 5px;
+    border-top: 1px solid #a7adb5;
+    text-align: right;
   }
 
   body.print-patient-mode > :not(.patient-print-area) {
